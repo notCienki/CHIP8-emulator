@@ -52,3 +52,51 @@ void Chip8::LoadROM(char const *filename)
     delete[] buffer;
   }
 }
+
+void Chip8::Cycle()
+{
+  opcode = (memory[pc] << 8) | memory[pc + 1];
+  pc += 2;
+  uint8_t firstNumber = (opcode & 0xF000) >> 12;
+
+  switch (firstNumber)
+  {
+  case 0x1:
+  {
+    uint16_t address = opcode & 0x0FFF;
+    pc = address;
+    break;
+  }
+  case 0x6:
+  {
+    uint8_t x = (opcode & 0x0F00) >> 8;
+    uint8_t kk = opcode & 0x00FF;
+    registers[x] = kk;
+    break;
+  }
+  case 0x7:
+  {
+    uint8_t x = (opcode & 0x0F00) >> 8;
+    uint8_t kk = opcode & 0x00FF;
+    registers[x] += kk;
+    break;
+  }
+  case 0x8:
+  {
+    uint8_t x = (opcode & 0x0F00) >> 8;
+    uint8_t y = (opcode & 0x00F0) >> 4;
+    uint8_t lastNumber = (opcode & 0x000F);
+    switch (lastNumber)
+    {
+    case 0x0:
+    {
+      registers[x] = registers[y];
+      break;
+    }
+    }
+    break;
+  }
+  default:
+    break;
+  }
+}

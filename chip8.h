@@ -8,6 +8,7 @@ class Chip8
 public:
   Chip8();
   void LoadROM(char const *filename);
+  void Cycle();
 
 private:
   uint8_t memory[4096]{};
